@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const flash = require("connect-flash");
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
@@ -9,13 +10,14 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 const path = require('path');
 
-// Require Session 
+// Require Session & Passport & bcrypt 
 const session = require("express-session");
-
-//For Passport
+const bcrypt = require("bcrypt");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
+// Allow User Model Use
+const User = require('./models/user');
 
 mongoose
   .connect('mongodb://localhost/project-folder', { useNewUrlParser: true })
@@ -99,8 +101,9 @@ app.locals.title = 'Express - Generated with IronGenerator';
 const index = require('./routes/index');
 app.use('/', index);
 
-// import routes from auth.js
-app.use('/', require('./routes/auth-routes'));
 
+// import routes from auth.js
+const router = require("./routes/auth-routes");
+app.use('/', router);
 
 module.exports = app;

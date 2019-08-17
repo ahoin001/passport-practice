@@ -2,13 +2,13 @@
 const express = require("express");
 const router = express.Router();
 
-// To allow use for passport
 const passport = require("passport");
+const ensureLogin = require("connect-ensure-login");
 
-// Import User model
+// User model
 const User = require("../models/user");
 
-// Require Bcrypt to encrypt passwords
+// Bcrypt to encrypt passwords
 const bcrypt = require("bcrypt");
 const bcryptSalt = 10;
 
@@ -20,13 +20,11 @@ router.post("/signup", (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    // if username or password field is empty
     if (username === "" || password === "") {
         res.render("auth/signup", { message: "Indicate username and password" });
         return;
     }
 
-    // If username is already taken in DB 
     User.findOne({ username })
         .then(user => {
             if (user !== null) {
@@ -46,14 +44,6 @@ router.post("/signup", (req, res, next) => {
                 if (err) {
                     res.render("auth/signup", { message: "Something went wrong" });
                 } else {
-
-                    User
-                        .find()
-                        .then((users) => {
-                            console.log('Users --------------------------', users);
-                        }
-                        )
-                    // redirect user back to 
                     res.redirect("/");
                 }
             });
@@ -67,12 +57,15 @@ router.get("/login", (req, res, next) => {
     res.render("auth/login");
 });
 
-// The post will contain the passport functionality
 router.post("/login", passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true,
     passReqToCallback: true
 }));
+
+router.get("/private-page", ensureLogin.ensureLoggedIn(), (req, res) => {
+    res.render("private", { user: req.user });
+  });
 
 module.exports = router;
