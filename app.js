@@ -9,6 +9,13 @@ const mongoose     = require('mongoose');
 const logger       = require('morgan');
 const path         = require('path');
 
+// Require Session 
+const session = require("express-session");
+
+//For Passport
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 
 mongoose
   .connect('mongodb://localhost/project-folder', {useNewUrlParser: true})
@@ -55,6 +62,7 @@ app.locals.title = 'Express - Generated with IronGenerator';
 const index = require('./routes/index');
 app.use('/', index);
 
+// import routes from auth.js
 app.use('/',require('./routes/auth-routes'));
 
 
