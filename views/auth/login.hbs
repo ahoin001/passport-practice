@@ -7,7 +7,14 @@
         <label for="password">Password:</label>
         <input type="password" name="password">
     </div>
-    <div>
-        <input type="submit" value="Log In">
     </div>
+    
+    {{#if message}}
+    <div class="error-message">{{ message }}</div>
+    {{/if}}
+    <div>
+
+        <div>
+            <input type="submit" value="Log In">
+        </div>
 </form>

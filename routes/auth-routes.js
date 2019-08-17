@@ -54,7 +54,7 @@ router.post("/signup", (req, res, next) => {
 });
 
 router.get("/login", (req, res, next) => {
-    res.render("auth/login");
+    res.render("auth/login", { "message": req.flash("error") });
 });
 
 router.post("/login", passport.authenticate("local", {
@@ -63,6 +63,12 @@ router.post("/login", passport.authenticate("local", {
     failureFlash: true,
     passReqToCallback: true
 }));
+
+// Passport exposes Logout function from req object
+router.get("/logout", (req, res) => {
+    req.logout();
+    res.redirect("/login");
+  });
 
 router.get("/private-page", ensureLogin.ensureLoggedIn(), (req, res) => {
     res.render("private", { user: req.user });
