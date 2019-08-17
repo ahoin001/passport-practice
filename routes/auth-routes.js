@@ -2,6 +2,9 @@
 const express = require("express");
 const router = express.Router();
 
+// To allow use for passport
+const passport = require("passport");
+
 // Import User model
 const User = require("../models/user");
 
@@ -59,5 +62,17 @@ router.post("/signup", (req, res, next) => {
             next(error)
         })
 });
+
+router.get("/login", (req, res, next) => {
+    res.render("auth/login");
+});
+
+// The post will contain the passport functionality
+router.post("/login", passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+    passReqToCallback: true
+}));
 
 module.exports = router;
